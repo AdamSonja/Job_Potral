@@ -1,0 +1,40 @@
+package com.telusko.controller;
+
+import com.telusko.model.JobPost;
+import com.telusko.repo.JobRepo;
+import com.telusko.service.JobService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
+@Controller
+public class JobController {
+    @Autowired
+    private JobService service;
+
+    @RequestMapping("/home")
+    public String home(){
+        return "home";
+    }
+    @GetMapping ("/addjob")
+    public String addjob(){
+        return "addjob";
+    }
+
+    @GetMapping("viewalljobs")
+    public String viewJobs(Model m) {
+        List<JobPost> jobs = service.getAllJobs();
+        m.addAttribute("jobPosts", jobs);
+
+        return "viewalljobs";
+    }
+    @PostMapping("/handleForm")
+    public String handleForm(JobPost jobPost){
+        service.addJob(jobPost);
+        return "sucess";
+    }
+}
