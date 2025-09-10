@@ -29,7 +29,6 @@ public class JobController {
     public String viewJobs(Model m) {
         List<JobPost> jobs = service.getAllJobs();
         m.addAttribute("jobPosts", jobs);
-
         return "viewalljobs";
     }
     @PostMapping("/handleForm")
