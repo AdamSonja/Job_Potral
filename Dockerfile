@@ -1,14 +1,15 @@
-# Use official Java runtime as base
-FROM openjdk:17-jdk-slim
+# Use official OpenJDK image
+FROM eclipse-temurin:17-jdk-alpine
 
-# Set working directory inside container
-WORKDIR /app
+# Set environment variables
+ENV APP_HOME=/app
+WORKDIR $APP_HOME
 
-# Copy the JAR from target folder into container
+# Copy the built jar into the container
 COPY target/JobApp-0.0.1-SNAPSHOT.jar app.jar
 
-# Expose port 8080 (Spring Boot default)
+# Expose port 8080
 EXPOSE 8080
 
-# Run the app
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the jar
+ENTRYPOINT ["java","-jar","app.jar"]
