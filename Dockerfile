@@ -1,5 +1,5 @@
 # =========================
-# Stage 1: Build the JAR
+# Stage 1: Build the WAR
 # =========================
 FROM maven:3.9.3-eclipse-temurin-17 AS build
 WORKDIR /app
@@ -7,24 +7,24 @@ WORKDIR /app
 # Copy Maven config first (for caching dependencies)
 COPY pom.xml .
 
-# Copy the project source code, including JSPs
+# Copy the project source code
 COPY src ./src
-COPY src/main/webapp ./src/main/webapp
 
-# Build the project without running tests
+# Build the WAR without tests
 RUN mvn clean package -DskipTests
 
 # =========================
-# Stage 2: Run the App
+# Stage 2: Run the WAR in Tomcat
 # =========================
-FROM eclipse-temurin:17-jdk-alpine
-WORKDIR /app
+FROM tomcat:10.1.17-jdk17
+# Remove default ROOT webapp
+RUN rm -rf /usr/local/tomcat/webapps/ROOT
 
-# Copy the built JAR from the build stage
-COPY --from=build /app/target/JobApp-0.0.1-SNAPSHOT.jar app.jar
+# Copy WAR as ROOT
+COPY --from=build /app/target/JobApp-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
 
-# Expose the port (Render will inject $PORT)
+# Expose port
 EXPOSE 8080
 
-# Command to run your Spring Boot app with Render's dynamic port
-CMD ["sh", "-c", "java -Dserver.port=$PORT -jar app.jar"]
+# Start Tomcat
+CMD ["catalina.sh", "run"]
