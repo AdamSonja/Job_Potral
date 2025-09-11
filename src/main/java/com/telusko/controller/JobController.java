@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -16,8 +17,8 @@ public class JobController {
     @Autowired
     private JobService service;
 
-    @RequestMapping("/home")
-    public String home(){
+    @RequestMapping({"/", "/home"})
+    public String home() {
         return "home";
     }
     @GetMapping ("/addjob")
@@ -32,8 +33,9 @@ public class JobController {
         return "viewalljobs";
     }
     @PostMapping("/handleForm")
-    public String handleForm(JobPost jobPost){
+    public String handleForm(@ModelAttribute JobPost jobPost,Model m){
         service.addJob(jobPost);
-        return "sucess";
+        m.addAttribute("jobPost", jobPost);
+        return "success";
     }
 }
